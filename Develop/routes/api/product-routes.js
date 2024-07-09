@@ -8,15 +8,18 @@ router.get('/', async (req, res) => {
   // find all products
   try {
     const productData = await Product.findAll({
+      //these will help identify attributes within the object
       include : [{
         model : Category,
         attributes: ["category_name"]
       },
       {
         model: Tag,
-        through: ProductTag
+        through: ProductTag,
+        attributes: ["tag_name"]
       }]
     });
+
     res.status(200).json(productData);
   } catch (err) {
     res.status(500).json(err);
@@ -24,7 +27,7 @@ router.get('/', async (req, res) => {
   // be sure to include its associated Category and Tag data
 });
 
-// get one product
+// get one product by ID
 router.get('/:id', async (req, res) => {
   // find a single product by its `id`
   try {
@@ -43,6 +46,7 @@ router.get('/:id', async (req, res) => {
       res.status(404).json({ message: 'No product found with this id!' });
       return;
     }
+
 
     res.status(200).json(productData);
   } catch (err) {
@@ -83,7 +87,7 @@ router.post('/', (req, res) => {
     });
 });
 
-// update product
+// update product by ID
 router.put('/:id', (req, res) => {
   // update product data
   Product.update(req.body, {
@@ -128,6 +132,7 @@ router.put('/:id', (req, res) => {
     });
 });
 
+//delete product by ID
 router.delete('/:id', async (req, res) => {
   // delete one product by its `id` value
   try {
